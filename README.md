@@ -52,7 +52,7 @@ This project is built using **Spring Cloud** microservices architecture, ensurin
 1. Clone the repository
 2. Run the following command:
    ```bash
-   docker-compose up -d
+   docker-compose up -d --build
    ```
 
 ### Running Locally
