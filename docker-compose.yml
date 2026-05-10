@@ -1,0 +1,210 @@
+services:
+  # Database cho User Service
+  user-db:
+    image: mysql:8.0
+    container_name: user-db1
+    ports:
+      - "3312:3306"
+    environment:
+      MYSQL_DATABASE: db_user
+      MYSQL_ROOT_PASSWORD: 123456
+    volumes:
+      - user_data:/var/lib/mysql
+    networks:
+      - water-network
+
+  # Database cho Customer Service
+  customer-db:
+    image: mysql:8.0
+    container_name: customer-db
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_DATABASE: db_customer
+      MYSQL_ROOT_PASSWORD: 123456
+    volumes:
+      - customer_data:/var/lib/mysql
+    networks:
+      - water-network
+
+  # Database cho Asset Service
+  asset-db:
+    image: mysql:8.0
+    container_name: asset-db
+    ports:
+      - "3308:3306"
+    environment:
+      MYSQL_DATABASE: db_asset
+      MYSQL_ROOT_PASSWORD: 123456
+    volumes:
+      - asset_data:/var/lib/mysql
+    networks:
+      - water-network
+
+  # Database cho Contract Service
+  contract-db:
+    image: mysql:8.0
+    container_name: contract-db
+    ports:
+      - "3309:3306"
+    environment:
+      MYSQL_DATABASE: db_contract
+      MYSQL_ROOT_PASSWORD: 123456
+    volumes:
+      - contract_data:/var/lib/mysql
+    networks:
+      - water-network
+
+  # Database cho Bill Service
+  bill-db:
+    image: mysql:8.0
+    container_name: bill-db
+    ports:
+      - "3310:3306"
+    environment:
+      MYSQL_DATABASE: db_bill
+      MYSQL_ROOT_PASSWORD: 123456
+    volumes:
+      - bill_data:/var/lib/mysql
+    networks:
+      - water-network
+
+  # Database cho Meter Service
+  meter-db:
+    image: mysql:8.0
+    container_name: meter-db
+    ports:
+      - "3311:3306"
+    environment:
+      MYSQL_DATABASE: db_meter
+      MYSQL_ROOT_PASSWORD: 123456
+    volumes:
+      - meter_data:/var/lib/mysql
+    networks:
+      - water-network
+
+  eureka-server:
+    build: ./Eureka-Server
+    container_name: eureka-server
+    ports:
+      - "8761:8761"
+    networks:
+      - water-network
+
+  api-gateway:
+    build: ./API-Gateway
+    container_name: api-gateway
+    ports:
+      - "8888:8888"
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
+    depends_on:
+      - eureka-server
+    networks:
+      - water-network
+
+  user-service:
+    build: ./User-Service
+    container_name: user-service
+    ports:
+      - "8087:8087"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://user-db1:3306/db_user
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
+    depends_on:
+      - user-db
+      - eureka-server
+    networks:
+      - water-network
+
+  customer-service:
+    build: ./Customer-Service
+    container_name: customer-service
+    ports:
+      - "8086:8086"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://customer-db:3306/db_customer
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
+    depends_on:
+      - customer-db
+      - eureka-server
+    networks:
+      - water-network
+
+  asset-service:
+    build: ./Asset-Service
+    container_name: asset-service
+    ports:
+      - "8082:8082"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://asset-db:3306/db_asset
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
+    depends_on:
+      - asset-db
+      - eureka-server
+    networks:
+      - water-network
+
+  contract-service:
+    build: ./Contract-Service
+    container_name: contract-service
+    ports:
+      - "8083:8083"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://contract-db:3306/db_contract
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
+    depends_on:
+      - contract-db
+      - eureka-server
+    networks:
+      - water-network
+
+  bill-service:
+    build: ./Bill-Service
+    container_name: bill-service
+    ports:
+      - "8084:8084"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://bill-db:3306/db_bill
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
+    depends_on:
+      - bill-db
+      - eureka-server
+    networks:
+      - water-network
+
+  meter-service:
+    build: ./Meter-Service
+    container_name: meter-service
+    ports:
+      - "8085:8085"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://meter-db:3306/db_meter
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
+    depends_on:
+      - meter-db
+      - eureka-server
+    networks:
+      - water-network
+
+  frontend:
+    build: ./frontend
+    container_name: frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - api-gateway
+    networks:
+      - water-network
+
+networks:
+  water-network:
+    driver: bridge
+
+volumes:
+  customer_data:
+  asset_data:
+  contract_data:
+  bill_data:
+  meter_data:
+  user_data:

@@ -1,0 +1,22 @@
+server:
+  port: 8086
+
+spring:
+  application:
+    name: Customer-Service
+  datasource:
+    url: jdbc:mysql://localhost:3307/db_customer
+    username: root
+    password: 123456 # Ông kiểm tra lại Pass là 'root' hay '123456' nhé (trong DockerCompose ông để là root)
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/

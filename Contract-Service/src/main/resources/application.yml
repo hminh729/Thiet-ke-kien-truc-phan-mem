@@ -1,0 +1,24 @@
+server:
+  port: 8083 # Cổng riêng cho Contract
+
+spring:
+  application:
+    name: contract-service
+  datasource:
+    url: jdbc:mysql://localhost:3309/db_contract # Port 3309 như trong Docker
+    username: root
+    password: 123456
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  spring:
+    cloud:
+      openfeign:
+        httpclient:
+          hc5:
+            enabled: true
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/

@@ -1,0 +1,44 @@
+server:
+  port: 8888
+
+spring:
+  application:
+    name: API-Gateway
+  cloud:
+    gateway:
+      routes:
+        - id: user-service
+          uri: lb://USER-SERVICE
+          predicates:
+            - Path=/api/v1/users/**
+        - id: customer-service
+          uri: lb://CUSTOMER-SERVICE
+          predicates:
+            - Path=/api/v1/customers/**
+        - id: contract-service
+          uri: lb://CONTRACT-SERVICE
+          predicates:
+            - Path=/api/v1/contracts/**
+        - id: asset-service
+          uri: lb://ASSET-SERVICE
+          predicates:
+            - Path=/api/v1/assets/**
+        - id: bill-service
+          uri: lb://BILL-SERVICE
+          predicates:
+            - Path=/api/v1/bills/**
+        - id: meter-service
+          uri: lb://METER-SERVICE
+          predicates:
+            - Path=/api/v1/meters/**
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
